@@ -5,7 +5,8 @@ const appPer = new Vue({
         errors: [],
         view: true,
         buscador: '',
-        listaVacunas: []
+        listaVacunas: [],
+        view_data: false,
     },
     created: function () {
         // this.viewPeriod();
@@ -17,19 +18,62 @@ const appPer = new Vue({
 
         back(){
             this.view = true
+            this.view_data = false;
         },
 
         searchVaccine(){
+            if(this.buscador.length < 8){
+                toastr.warning('La cantidad de dígitos es incorrecto', null, { "closeButton": true, "progressBar": true });
+            }else{
+                axios.get('searchdoc/', { params: { 'dni': this.buscador } })
+                .then(response => {
+                    this.listaVacunas = response.data;
+                    this.view_data = true;
+                    this.buscador = '';
+                    this.listaVacunas[0].PRIMERA_GRUPO != null ? first = this.listaVacunas[0].PRIMERA_GRUPO.replace('ni', 'ñ') : first = null;
+                    this.listaVacunas[0].SEGUNDA_GRUPO != null ? second = this.listaVacunas[0].SEGUNDA_GRUPO.replace('ni', 'ñ') : second = null;
+                    this.listaVacunas[0].TERCERA_GRUPO != null ? third = this.listaVacunas[0].TERCERA_GRUPO.replace('ni', 'ñ') : third = null;
+                    this.listaVacunas[0].CUARTA_GRUPO != null ? fourth = this.listaVacunas[0].CUARTA_GRUPO.replace('ni', 'ñ') : fourth = null;
+                    this.listaVacunas[0].first = first;
+                    this.listaVacunas[0].second = second;
+                    this.listaVacunas[0].thirds = third;
+                    this.listaVacunas[0].fourth = fourth;
 
-            axios.get('searchdoc/', { params: { 'dni': this.buscador } })
-            .then(response => {
-                this.listaVacunas = response.data;
-                console.log(this.listaVacunas);
+                }).catch(er => {
+                    this.errors.push(er)
+                });
+            }
+        },
 
-            }).catch(er => {
-                // this.errors.push(er)
-                console.log(er.response);
-            });
+        searchVaccineInput(e){
+            if (e.keyCode === 13) {
+                if(this.buscador.length < 8){
+                    toastr.warning('La cantidad de dígitos es incorrecto', null, { "closeButton": true, "progressBar": true });
+                }else{
+                    axios.get('searchdoc/', { params: { 'dni': this.buscador } })
+                    .then(response => {
+                        this.listaVacunas = response.data;
+                        this.view_data = true;
+                        this.buscador = '';
+                        this.listaVacunas[0].PRIMERA_GRUPO != null ? first = this.listaVacunas[0].PRIMERA_GRUPO.replace('ni', 'ñ') : first = null;
+                        this.listaVacunas[0].SEGUNDA_GRUPO != null ? second = this.listaVacunas[0].SEGUNDA_GRUPO.replace('ni', 'ñ') : second = null;
+                        this.listaVacunas[0].TERCERA_GRUPO != null ? third = this.listaVacunas[0].TERCERA_GRUPO.replace('ni', 'ñ') : third = null;
+                        this.listaVacunas[0].CUARTA_GRUPO != null ? fourth = this.listaVacunas[0].CUARTA_GRUPO.replace('ni', 'ñ') : fourth = null;
+                        this.listaVacunas[0].first = first;
+                        this.listaVacunas[0].second = second;
+                        this.listaVacunas[0].thirds = third;
+                        this.listaVacunas[0].fourth = fourth;
+
+                    }).catch(er => {
+                        this.errors.push(er)
+                    });
+                }
+            }
+        },
+
+        clear(){
+            this.buscador = '';
+            this.view_data = false
         }
     }
 })

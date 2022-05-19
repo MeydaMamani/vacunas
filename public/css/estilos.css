@@ -678,6 +678,14 @@ a {
     .homologation {
         margin: 15px 20px;
     }
+
+    .user-photo {
+        margin-top: 60px;
+    }
+
+    .port-photo{
+        display: none !important;
+    }
 }
 
 @media screen and (min-width: 1200px) {
